@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>支援方法検索</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #6c757d;
+        }
+
+        #search-bar {
+            width: 80%;
+            margin: 0 auto;
+            display: block;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            cursor: pointer;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 5px;
+            color: blue;
+            background-color: white;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        li:hover {
+            background-color: #f8f8f8;
+        }
+
+        li.clicked {
+            color: #8a63d2;
+        }
+
+        #search-results {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+        }
+
+        #support-detail {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+        }
+
+        #detail-content {
+            font-size: 16px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>支援方法検索</h1>
+    <input type="text" id="search-bar" placeholder="コミュニケーションや一斉指示などの単語で入力してみてください" onkeyup="searchSupportMethods()">
+    
+    <div id="search-results">
+        <ul id="support-methods">
+            <!-- CSVデータから生成されたリストがここに表示される -->
+        </ul>
+    </div>
+
+    <div id="support-detail">
+        <h2>支援詳細</h2>
+        <p id="detail-content"></p>
+    </div>
+
+    <script>
+        var csvData = `支援方法1,タグ1,支援詳細1
+支援方法2,タグ2,支援詳細2
+支援方法3,タグ3,支援詳細3`;
+
+        function loadCSVData() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "data.csv", true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    csvData = xhr.responseText;
+                    initializeTable();
+                }
+            };
+            xhr.send();
+        }
+
+        function initializeTable() {
+            var supportMethods = document.getElementById('support-methods');
+            supportMethods.innerHTML = '';
+            var lines = csvData.split('\n');
+
+            for (var i = 0; i < lines.length; i++) {
+                var row = lines[i].split(',');
+                if (row.length === 3) {
+                    var method = row[0];
+                    var tags = row[1];
+                    var detail = row[2];
+
+                    var li = document.createElement('li');
+                    li.textContent = method + " #" + tags;
+                    li.setAttribute('data-detail', detail);
+                    supportMethods.appendChild(li);
+
+                    li.addEventListener('click', function () {
+                        showSupportDetail(this);
+                    });
+                }
+            }
+
+            document.getElementById('search-results').style.display = 'block';
+        }
+
+        function searchSupportMethods() {
+            var keyword = document.getElementById('search-bar').value.toLowerCase();
+            var items = document.querySelectorAll('#support-methods li');
+
+            items.forEach(function (item) {
+                var tags = item.textContent.toLowerCase();
+                if (tags.includes(keyword)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        function showSupportDetail(item) {
+            var detail = item.getAttribute('data-detail');
+            var detailContent = document.getElementById('detail-content');
+            detailContent.textContent = detail;
+            detailContent.style.display = 'block';
+
+            var items = document.querySelectorAll('#support-methods li');
+            items.forEach(function (li) {
+                li.classList.remove('clicked');
+            });
+            item.classList.add('clicked');
+        }
+
+        loadCSVData();
+    </script>
+</body>
+</html>
