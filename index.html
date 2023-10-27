@@ -2,28 +2,28 @@
 <html>
 <head>
     <title>支援方法検索</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f5f5f5;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            background-color: #f5f5f5;
         }
 
         h1 {
             text-align: center;
-            margin-top: 20px;
-            color: #6c757d;
+            margin: 20px 0;
+            color: #333;
         }
 
         #search-bar {
-            width: 80%;
+            width: 90%;
             margin: 0 auto;
             display: block;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            font-size: 16px;
         }
 
         ul {
@@ -33,45 +33,23 @@
 
         li {
             cursor: pointer;
+            background-color: #fff;
             border: 1px solid #ccc;
             padding: 10px;
             margin: 5px;
-            color: blue;
-            background-color: white;
-            border-radius: 5px;
             transition: background-color 0.3s, color 0.3s;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         }
 
         li:hover {
-            background-color: #f8f8f8;
-        }
-
-        li.clicked {
-            color: #8a63d2;
-        }
-
-        #search-results {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: white;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
-        }
-
-        #support-detail {
-            max-width: 800px;
-            margin: 20px auto;
-            background-color: white;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
+            background-color: #e0e0f0;
         }
 
         #detail-content {
-            font-size: 16px;
-            color: #333;
+            display: none;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px auto;
         }
     </style>
 </head>
@@ -86,7 +64,6 @@
     </div>
 
     <div id="support-detail">
-        <h2>支援詳細</h2>
         <p id="detail-content"></p>
     </div>
 
@@ -123,14 +100,17 @@
                     li.textContent = method + " #" + tags;
                     li.setAttribute('data-detail', detail);
                     supportMethods.appendChild(li);
-
-                    li.addEventListener('click', function () {
-                        showSupportDetail(this);
-                    });
                 }
             }
 
             document.getElementById('search-results').style.display = 'block';
+
+            var items = document.querySelectorAll('#support-methods li');
+            items.forEach(function (item) {
+                item.addEventListener('click', function () {
+                    showSupportDetail(item);
+                });
+            });
         }
 
         function searchSupportMethods() {
@@ -152,14 +132,9 @@
             var detailContent = document.getElementById('detail-content');
             detailContent.textContent = detail;
             detailContent.style.display = 'block';
-
-            var items = document.querySelectorAll('#support-methods li');
-            items.forEach(function (li) {
-                li.classList.remove('clicked');
-            });
-            item.classList.add('clicked');
         }
 
+        // CSVデータを読み込んでテーブルを初期化
         loadCSVData();
     </script>
 </body>
