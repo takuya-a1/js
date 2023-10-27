@@ -2,28 +2,16 @@
 <html>
 <head>
     <title>支援方法検索</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f5f5f5;
-        }
-
         h1 {
             text-align: center;
-            margin: 20px 0;
-            color: #333;
+            margin-top: 20px;
         }
 
         #search-bar {
-            width: 90%;
+            width: 80%;
             margin: 0 auto;
             display: block;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
         }
 
         ul {
@@ -33,29 +21,33 @@
 
         li {
             cursor: pointer;
-            background-color: #fff;
             border: 1px solid #ccc;
             padding: 10px;
             margin: 5px;
-            transition: background-color 0.3s, color 0.3s;
+            color: #1e90ff;
         }
 
         li:hover {
-            background-color: #e0e0f0;
+            background-color: lightgray;
         }
 
         #detail-content {
-            display: none;
-            background-color: #fff;
             border: 1px solid #ccc;
             padding: 10px;
-            margin: 10px auto;
+            display: none;
+        }
+
+        #citation {
+            text-align: right;
+            font-size: 14px;
+            margin-right: 20px;
+            color: #888;
         }
     </style>
 </head>
 <body>
     <h1>支援方法検索</h1>
-    <input type="text" id="search-bar" placeholder="単語で入力してください。e.g.一斉指示　コミュニケーション" onkeyup="searchSupportMethods()">
+    <input type="text" id="search-bar" placeholder="e.g. 一斉指示 コミュニケーション 書き" onkeyup="searchSupportMethods()">
     
     <div id="search-results">
         <ul id="support-methods">
@@ -65,12 +57,13 @@
 
     <div id="support-detail">
         <p id="detail-content"></p>
+        <p id="citation"></p>
     </div>
 
     <script>
-        var csvData = `支援方法1,タグ1,支援詳細1
-支援方法2,タグ2,支援詳細2
-支援方法3,タグ3,支援詳細3`;
+        var csvData = `支援方法1,タグ1,支援詳細1,引用元1
+支援方法2,タグ2,支援詳細2,引用元2
+支援方法3,タグ3,支援詳細3,引用元3`;
 
         function loadCSVData() {
             var xhr = new XMLHttpRequest();
@@ -91,14 +84,16 @@
 
             for (var i = 0; i < lines.length; i++) {
                 var row = lines[i].split(',');
-                if (row.length === 3) {
+                if (row.length === 4) {
                     var method = row[0];
                     var tags = row[1];
                     var detail = row[2];
+                    var citation = row[3];
 
                     var li = document.createElement('li');
                     li.textContent = method + " #" + tags;
                     li.setAttribute('data-detail', detail);
+                    li.setAttribute('data-citation', citation);
                     supportMethods.appendChild(li);
                 }
             }
@@ -129,8 +124,11 @@
 
         function showSupportDetail(item) {
             var detail = item.getAttribute('data-detail');
+            var citation = item.getAttribute('data-citation');
             var detailContent = document.getElementById('detail-content');
+            var citationContent = document.getElementById('citation');
             detailContent.textContent = detail;
+            citationContent.textContent = "引用元: " + citation;
             detailContent.style.display = 'block';
         }
 
